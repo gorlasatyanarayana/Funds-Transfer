@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aditya.fundstransfer.model.CustomResponse;
 import com.aditya.fundstransfer.model.CustomResponseBody;
 import com.aditya.fundstransfer.request.InquiryAccountRequest;
+import com.aditya.fundstransfer.request.InquiryCustomerRequest;
 import com.aditya.fundstransfer.response.ResponseVo;
 import com.aditya.fundstransfer.service.FundTransferService;
 import com.aditya.fundstransfer.util.ResponseBuilder;
@@ -20,7 +21,6 @@ import com.aditya.fundstransfer.util.ResponseBuilder;
 @RestController
 @RequestMapping("/fundstransfer")
 public class FundTransferController {
-	
 	
 	@Autowired
 	private ResponseBuilder<ResponseVo> responseBuilder;
@@ -31,6 +31,16 @@ public class FundTransferController {
 	@PostMapping(value = "{version}/inquiry/account")
 	public ResponseEntity<CustomResponse<ResponseVo>> inquiryAccount(@PathVariable("version") String version, @RequestBody InquiryAccountRequest req) {
 		ResponseVo responseVo = fundTransferService.inquiryAccount(req);
+		CustomResponseBody<ResponseVo> response = new CustomResponseBody<>();
+		response.setPayload(Collections.singletonList(responseVo));
+		response.setErrors(Collections.emptyList());
+		
+		return ResponseEntity.ok().body(responseBuilder.buildResponse(response));
+	}
+	
+	@PostMapping(value = "{version}/inquiry/customer")
+	public ResponseEntity<CustomResponse<ResponseVo>> inquiryCustomer(@PathVariable("version") String version, @RequestBody InquiryCustomerRequest req) {
+		ResponseVo responseVo = fundTransferService.inquiryCustomer(req);
 		CustomResponseBody<ResponseVo> response = new CustomResponseBody<>();
 		response.setPayload(Collections.singletonList(responseVo));
 		response.setErrors(Collections.emptyList());
